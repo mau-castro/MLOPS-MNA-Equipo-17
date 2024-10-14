@@ -1,4 +1,6 @@
 import pandas as pd
+import sys
+from sklearn.model_selection import train_test_split
 
 # Función para convertir 'years days' a número decimal
 def convertir_edad_decimal(age_str):
@@ -88,11 +90,42 @@ def guardar_csv(dataset, save_path):
     # Salvar el dataframe limpio en un nuevo archivo csv
     dataset.to_csv(save_path, index=False)
 
-def clean_csv(dataset, save_path):
+def clean_csv(dataset):
     dataset = variables_a_binario(dataset)
     dataset = creacion_tumor_info(dataset)
     dataset = mapeo_variables(dataset)
     dataset = eliminar_variables_innecesarias(dataset)
     dataset = ordenar_columnas(dataset)
-    guardar_csv(dataset, save_path)
+    #guardar_csv(dataset, save_path)
     return dataset
+
+
+def preprocess_data(data_path):
+    dataset = pd.read_csv(data_path)
+    data = clean_csv(dataset)
+    # Separar nuestros datos
+    X = data.drop(["Grade"], axis=1)
+    y = data["Grade"]
+    # Generar los datos para probar y para entrenar con parametros seleccionados
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=44)
+
+
+    return X_train, X_test, y_train, y_test
+
+
+   
+
+
+
+if __name__ == '__main__':
+    data_path = sys.argv[1]
+    output_train_features = sys.argv[2]
+    output_test_features = sys.argv[3]
+    output_train_target = sys.argv[4]
+    output_test_target = sys.argv[5]
+
+    X_train, X_test, y_train, y_test = preprocess_data(data_path)
+    pd.DataFrame(X_train).to_csv(output_train_features, index=False)
+    pd.DataFrame(X_test).to_csv(output_test_features, index=False)
+    pd.DataFrame(y_train).to_csv(output_train_target, index=False)
+    pd.DataFrame(y_test).to_csv(output_test_target, index=False)

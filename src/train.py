@@ -4,12 +4,16 @@ from sklearn.metrics import classification_report
 from sklearn.model_selection import GridSearchCV
 import numpy as np
 import pandas as pd
+import sys 
+import joblib
 
 def read_data(path):
     data_df = pd.read_csv(path)
     return data_df
 
-def train_model(data_df):
+
+
+def train_model_v1(data_df):
     # Separar nuestros datos
     X = data_df.drop(["Grade"], axis=1)
     y = data_df["Grade"]
@@ -53,3 +57,22 @@ def train():
     grid_classif(rf_model, X_train, X_test, y_train, y_test)
     y_true, y_pred = y_test, rf_model.predict(X_test)
     return y_true, y_pred
+
+
+def train_model(X_train,y_train):
+    X_train = pd.read_csv(X_train_path)
+    y_train = pd.read_csv(y_train_path)
+    # Generar un modelo Random Forest con hiperparámetros seleccionados
+    rf_model = RandomForestClassifier(n_estimators=50, random_state=44)
+    # Entrenar el módelo con nuestros sets de entrenamiento
+    rf_model.fit(X_train, y_train)
+    # Ahora podemos obtener los valores de importancia de acuerdo con el modelo
+    return rf_model
+
+if __name__ == '__main__':
+    X_train_path = sys.argv[1]
+    y_train_path = sys.argv[2]
+    model_path = sys.argv[3]
+
+    model = train_model(X_train_path, y_train_path)
+    joblib.dump(model, model_path)
