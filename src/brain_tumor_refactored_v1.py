@@ -10,7 +10,7 @@ from sklearn.metrics import confusion_matrix, classification_report
 import warnings
 warnings.filterwarnings('ignore')
 
-filepath = "TCGA_GBM_LGG_Mutations_all.csv"
+filepath = "..\data\raw\TCGA_GBM_LGG_Mutations_all.csv"
 
 # Loading the data
 def load_data(filepath):
