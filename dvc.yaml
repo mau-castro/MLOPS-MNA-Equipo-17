@@ -1,0 +1,8 @@
+stages:
+  load_data:
+    cmd: python src/load_data.py data1/raw/TCGA_GBM_LGG_Mutations_all.csv
+    deps:
+    - data.filepath
+    - src/load_data.py
+    outs:
+    - data.processed
